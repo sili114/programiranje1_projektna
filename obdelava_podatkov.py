@@ -20,6 +20,19 @@ podatki_igralcev = re.compile(r'<a href=.*?>(?P<ime>.*?)<'
                               r'.*?fg2_per_g" >(?P<met_za_dve>.*?)<'
                               r'.*?fg2a_per_g" >(?P<poskus_za_dve>.*?)<'
                               r'.*?fg2_pct" >(?P<procent_za_dve>.*?)<'
+                              r'.*?data-stat="ft_per_g" >(?P<prosti_met>.*?)<'
+                              r'.*?data-stat="fta_per_g" >(?P<poskus_prosti_met>.*?)<'
+                              r'.*?data-stat="ft_pct" >(?P<prosti_met_procent>.*?)<'
+                              r'.*?data-stat="orb_per_g" >(?P<napadalni_skok>.*?)<'
+                              r'.*?data-stat="drb_per_g" >(?P<obrambni_skok>.*?)<'
+                              r'.*?data-stat="trb_per_g" >(?P<skok>.*?)<'
+                              r'.*?data-stat="ast_per_g" >(?P<podaje>.*?)<'
+                              r'.*?data-stat="stl_per_g" >(?P<ukradene_zoge>.*?)<'
+                              r'.*?data-stat="blk_per_g" >(?P<blokade>.*?)<'
+                              r'.*?data-stat="tov_per_g" >(?P<izgubljene_zoge>.*?)<'
+                              r'.*?data-stat="pf_per_g" >(?P<osebne_napake>.*?)<'
+                              r'.*?data-stat="pts_per_g" >(?P<tocke>.*?)<'
+
                               , flags=re.DOTALL)
 
 
@@ -31,16 +44,22 @@ def igralci_na_strani():
         igralci.append(blok.group(0))
     return igralci
 
+def pocist_podatke(blok):
+    igralecc = podatki_igralcev.search(blok).groupdict()
+    if len(igralecc['pozicija']) > 2:
+        igralecc['pozicija'] = igralecc['pozicija'][:2]
+    return igralecc
 
 igralci = []
 for igralec in igralci_na_strani():
-    podatki = podatki_igralcev.search(igralec).groupdict()
+    podatki = pocist_podatke(igralec)
     if podatki:
-        igralci.append(podatki_igralcev.search(igralec).groupdict())
+        igralci.append(pocist_podatke(igralec))
 
 
 orodja.zapisi_csv(
     igralci, ['ime', 'pozicija', 'starost', 'odigrane_tekme', 'prva_postava', 'igralni_cas', 'uspesni_meti', 'poskusi_metov',
     'procent_metov', 'meti_za_tri', 'poskusi_za_tri', 'procent_za_tri', 'met_za_dve', 'poskus_za_dve',
-    'procent_za_dve'], 'obdelani-podatki/avtomobili.csv'
+    'procent_za_dve', 'prosti_met', 'poskus_prosti_met', 'prosti_met_procent', 'napadalni_skok', 'obrambni_skok', 'skok', 'podaje'
+    , 'ukradene_zoge', 'blokade', 'izgubljene_zoge', 'osebne_napake', 'tocke'], 'obdelani-podatki/igralci.csv'
     )
