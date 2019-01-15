@@ -47,3 +47,10 @@ def zapisi_csv(slovarji, imena_polj, ime_datoteke):
 
 
 shrani_spletno_stran("https://www.basketball-reference.com/leagues/NBA_2018_per_game.html","podatki.html")
+def pridob(st_strani):
+    for i in range(1, st_strani + 1):
+        url = "http://www.espn.com/nba/salaries/_/year/2018/page/{}".format(i)
+        ime = "place{}".format(i)
+        shrani_spletno_stran(url, ime)
+
+pridob(12)

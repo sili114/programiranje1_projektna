@@ -7,7 +7,6 @@ bloki = re.compile(r'<tr class="f.*?tr>', flags=re.DOTALL)
 podatki_igralcev = re.compile(r'<a href=.*?>(?P<ime>.*?)<'
                               r'.*?data-stat="pos" >(?P<pozicija>.*?)<'
                               r'.*?data-stat="age" >(?P<starost>.*?)<'
-                          
                               r'.*?data-stat="g" >(?P<odigrane_tekme>.*?)<'
                               r'.*?data-stat="gs" >(?P<prva_postava>.*?)<'
                               r'.*?data-stat="mp_per_g" >(?P<igralni_cas>.*?)<'
@@ -63,3 +62,42 @@ orodja.zapisi_csv(
     'procent_za_dve', 'prosti_met', 'poskus_prosti_met', 'prosti_met_procent', 'napadalni_skok', 'obrambni_skok', 'skok', 'podaje'
     , 'ukradene_zoge', 'blokade', 'izgubljene_zoge', 'osebne_napake', 'tocke'], 'obdelani-podatki/igralci.csv'
     )
+
+
+bloki_za_place = re.compile(r'http://www.espn.com/nba/player.*?/td></tr><tr', flags=re.DOTALL)
+
+place_igralcev = re.compile(r'id.*?>(?P<ime>.*?)<'
+                            r'.*?text-align:right;">(?P<placa>.*?)<', flags=re.DOTALL)
+
+
+
+def placa(st_strani):
+    igralci = []
+    for i in range(1, st_strani + 1):
+        ime = 'podatki/place{}'.format(i)
+        vsebina1 = orodja.vsebina_datoteke(ime)
+        for blok in bloki_za_place.finditer(vsebina1):
+            igralci.append(blok.group(0))
+    return igralci
+
+
+def pocist_place(blok):
+    igralec = place_igralcev.search(blok).groupdict()
+
+    igralec['placa'] = int(igralec['placa'][1:].replace(',', ''))
+    return igralec
+
+def nared():
+    igr = []
+    sez = placa(12)
+    print(sez)
+    for igralec in sez:
+        pod = pocist_place(igralec)
+        igr.append(pod)
+    return igr
+
+n = nared()
+print(len(n))
+
+orodja.zapisi_csv(
+    n, ['ime', 'placa'] , 'obdelani-podatki/place_igralcev.csv')
