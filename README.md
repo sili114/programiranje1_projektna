@@ -29,5 +29,5 @@ Delovni proces:
 * Na teh podatkih bom preveril zgoraj omenjene hipoteze in še mnoge druge.
 
 
-Celotna analiza je v datoteki NBA_PROJEKTNA_NALOGA_PANDAS. 
+## Celotna analiza je v datoteki NBA_PROJEKTNA_NALOGA_PANDAS. 
     
